@@ -96,13 +96,20 @@ export default async function OrderPage({ params }: PageProps) {
             </h2>
             <div className="space-y-4">
               {itemsWithAvailability.map((item, idx) => (
-                <div 
+                <a 
                   key={idx}
-                  className="p-4 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border)]"
+                  href={`/product/${item.product_id}?item=${item.item_id}`}
+                  className="block p-4 bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border)]
+                             hover:border-[var(--accent)] transition-colors group"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <div className="font-medium">{item.name}</div>
+                      <div className="font-medium group-hover:text-[var(--accent)] transition-colors">
+                        {item.name}
+                        <svg className="inline-block w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </div>
                       <div className="mt-1 text-xs font-mono text-[var(--text-secondary)]">
                         Product: {item.product_id} | Item: {item.item_id}
                       </div>
@@ -125,7 +132,7 @@ export default async function OrderPage({ params }: PageProps) {
                       </span>
                     ))}
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </section>
