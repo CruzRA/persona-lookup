@@ -1,65 +1,72 @@
-import Image from "next/image";
+import { SearchBox } from "@/components/SearchBox";
+import { getAllUsers, getStats } from "@/lib/db";
 
 export default function Home() {
+  const users = getAllUsers();
+  const stats = getStats();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-12">
+      {/* Hero */}
+      <section className="text-center space-y-6 py-12">
+        <h1 className="text-4xl font-bold tracking-tight">
+          Find Your Persona
+        </h1>
+        <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
+          Search for a test user to view their profile, orders, and payment methods.
+        </p>
+        <SearchBox initialUsers={users} />
+      </section>
+
+      {/* Stats */}
+      <section className="grid grid-cols-3 gap-6">
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6 text-center">
+          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalUsers.toLocaleString()}</div>
+          <div className="text-sm text-[var(--text-secondary)] mt-1">Users</div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6 text-center">
+          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalOrders.toLocaleString()}</div>
+          <div className="text-sm text-[var(--text-secondary)] mt-1">Orders</div>
         </div>
-      </main>
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6 text-center">
+          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalProducts.toLocaleString()}</div>
+          <div className="text-sm text-[var(--text-secondary)] mt-1">Products</div>
+        </div>
+      </section>
+
+      {/* Quick access - random sample of users */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Quick Access</h2>
+        <p className="text-sm text-[var(--text-secondary)]">Sample personas to get started</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {users.slice(0, 12).map((user) => (
+            <a
+              key={user.user_id}
+              href={`/user/${user.user_id}`}
+              className="flex items-center gap-4 p-4 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg
+                         hover:border-[var(--accent)] hover:bg-[var(--bg-tertiary)] transition-all group"
+            >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent)] to-purple-600 
+                              flex items-center justify-center text-white font-semibold">
+                {user.name.first_name[0]}{user.name.last_name[0]}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium group-hover:text-[var(--accent)] transition-colors">
+                  {user.name.first_name} {user.name.last_name}
+                </div>
+                <div className="text-xs text-[var(--text-secondary)] truncate font-mono">
+                  {user.user_id}
+                </div>
+              </div>
+              <div className="text-[var(--text-secondary)] group-hover:text-[var(--accent)] transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
