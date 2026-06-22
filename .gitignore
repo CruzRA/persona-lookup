@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large uncompressed airline dataset (commit airline_db.json.gz instead)
+src/data/airline_db.json

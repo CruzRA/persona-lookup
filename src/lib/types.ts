@@ -1,8 +1,8 @@
-// Type definitions for the retail database
+// Type definitions for the airline database
 
 export interface Address {
   address1: string;
-  address2: string;
+  address2: string | null;
   city: string;
   country: string;
   state: string;
@@ -10,7 +10,7 @@ export interface Address {
 }
 
 export interface PaymentMethodBase {
-  source: "credit_card" | "paypal" | "gift_card";
+  source: "credit_card" | "gift_card" | "certificate";
   id: string;
 }
 
@@ -20,73 +20,103 @@ export interface CreditCard extends PaymentMethodBase {
   last_four: string;
 }
 
-export interface PayPal extends PaymentMethodBase {
-  source: "paypal";
-}
-
 export interface GiftCard extends PaymentMethodBase {
   source: "gift_card";
-  balance: number;
+  amount: number;
 }
 
-export type PaymentMethod = CreditCard | PayPal | GiftCard;
+export interface Certificate extends PaymentMethodBase {
+  source: "certificate";
+  amount: number;
+}
+
+export type PaymentMethod = CreditCard | GiftCard | Certificate;
+
+export interface PersonName {
+  first_name: string;
+  last_name: string;
+}
+
+export interface Passenger extends PersonName {
+  dob: string;
+}
+
+export type MembershipTier = "regular" | "silver" | "gold";
 
 export interface User {
   user_id: string;
-  name: {
-    first_name: string;
-    last_name: string;
-  };
+  name: PersonName;
   address: Address;
   email: string;
+  dob: string;
   payment_methods: Record<string, PaymentMethod>;
-  orders: string[];
+  saved_passengers: Passenger[];
+  membership: MembershipTier;
+  reservations: string[];
 }
 
-export interface ProductVariant {
-  item_id: string;
-  options: Record<string, string>;
-  available: boolean;
+export type FlightDateStatus =
+  | "available"
+  | "cancelled"
+  | "delayed"
+  | "flying"
+  | "landed"
+  | "on time";
+
+export interface FlightDateInfo {
+  status: FlightDateStatus;
+  actual_departure_time_est?: string;
+  actual_arrival_time_est?: string;
+  estimated_departure_time_est?: string;
+  estimated_arrival_time_est?: string;
+  available_seats?: Record<string, number>;
+  prices?: Record<string, number>;
+}
+
+export interface Flight {
+  origin: string;
+  destination: string;
+  flight_number: string;
+  scheduled_departure_time_est: string;
+  scheduled_arrival_time_est: string;
+  dates: Record<string, FlightDateInfo>;
+}
+
+export interface ReservationSegment {
+  origin: string;
+  destination: string;
+  flight_number: string;
+  date: string;
   price: number;
 }
 
-export interface Product {
-  name: string;
-  product_id: string;
-  variants: Record<string, ProductVariant>;
-}
-
-export interface OrderItem {
-  name: string;
-  product_id: string;
-  item_id: string;
-  price: number;
-  options: Record<string, string>;
-}
-
-export interface Fulfillment {
-  tracking_id: string[];
-  item_ids: string[];
-}
-
-export interface PaymentTransaction {
-  transaction_type: "payment" | "refund";
+export interface ReservationPayment {
+  payment_id: string;
   amount: number;
-  payment_method_id: string;
 }
 
-export interface Order {
-  order_id: string;
+export type FlightType = "one_way" | "round_trip";
+export type CabinClass = "basic_economy" | "economy" | "business";
+export type InsuranceOption = "yes" | "no";
+
+export interface Reservation {
+  reservation_id: string;
   user_id: string;
-  address: Address;
-  items: OrderItem[];
-  status: "pending" | "processed" | "delivered" | "cancelled";
-  fulfillments: Fulfillment[];
-  payment_history: PaymentTransaction[];
+  origin: string;
+  destination: string;
+  flight_type: FlightType;
+  cabin: CabinClass;
+  flights: ReservationSegment[];
+  passengers: Passenger[];
+  payment_history: ReservationPayment[];
+  created_at: string;
+  total_baggages: number;
+  nonfree_baggages: number;
+  insurance: InsuranceOption;
 }
 
-export interface RetailDatabase {
-  products: Record<string, Product>;
+export interface AirlineDatabase {
+  flights: Record<string, Flight>;
   users: Record<string, User>;
-  orders: Record<string, Order>;
+  reservations: Record<string, Reservation>;
 }

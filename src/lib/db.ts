@@ -1,22 +1,38 @@
-import type { RetailDatabase, User, Order, Product } from "./types";
-import data from "../data/retail_db.json";
+import { readFileSync } from "fs";
+import path from "path";
+import { gunzipSync } from "zlib";
+import type {
+  AirlineDatabase,
+  User,
+  Reservation,
+  Flight,
+  FlightDateInfo,
+} from "./types";
 
-// Cast through unknown to handle JSON's inferred types
-const db = data as unknown as RetailDatabase;
+let db: AirlineDatabase | null = null;
+
+function getDb(): AirlineDatabase {
+  if (!db) {
+    const filePath = path.join(process.cwd(), "src/data/airline_db.json.gz");
+    const compressed = readFileSync(filePath);
+    db = JSON.parse(gunzipSync(compressed).toString("utf-8")) as AirlineDatabase;
+  }
+  return db;
+}
 
 export function getAllUsers(): User[] {
-  return Object.values(db.users);
+  return Object.values(getDb().users);
 }
 
 export function getUserById(userId: string): User | undefined {
-  return db.users[userId];
+  return getDb().users[userId];
 }
 
 export function searchUsers(query: string): User[] {
   const q = query.toLowerCase().trim();
   if (!q) return [];
-  
-  return Object.values(db.users).filter((user) => {
+
+  return Object.values(getDb().users).filter((user) => {
     const fullName = `${user.name.first_name} ${user.name.last_name}`.toLowerCase();
     return (
       user.user_id.toLowerCase().includes(q) ||
@@ -26,41 +42,37 @@ export function searchUsers(query: string): User[] {
   });
 }
 
-export function getOrderById(orderId: string): Order | undefined {
-  return db.orders[orderId];
+export function getReservationById(reservationId: string): Reservation | undefined {
+  return getDb().reservations[reservationId];
 }
 
-export function getOrdersByUserId(userId: string): Order[] {
-  const user = db.users[userId];
+export function getReservationsByUserId(userId: string): Reservation[] {
+  const user = getDb().users[userId];
   if (!user) return [];
-  
-  return user.orders
-    .map((orderId) => db.orders[orderId])
-    .filter((order): order is Order => order !== undefined);
+
+  return user.reservations
+    .map((reservationId) => getDb().reservations[reservationId])
+    .filter((reservation): reservation is Reservation => reservation !== undefined);
 }
 
-export function getProductById(productId: string): Product | undefined {
-  return db.products[productId];
+export function getFlightByNumber(flightNumber: string): Flight | undefined {
+  return getDb().flights[flightNumber];
 }
 
-export function getVariantDetails(productId: string, itemId: string) {
-  const product = db.products[productId];
-  if (!product) return undefined;
-  
-  const variant = product.variants[itemId];
-  if (!variant) return undefined;
-  
-  return {
-    productName: product.name,
-    ...variant,
-  };
+export function getFlightDateInfo(
+  flightNumber: string,
+  date: string
+): FlightDateInfo | undefined {
+  const flight = getDb().flights[flightNumber];
+  if (!flight) return undefined;
+  return flight.dates[date];
 }
 
-// Stats for the homepage
 export function getStats() {
+  const database = getDb();
   return {
-    totalUsers: Object.keys(db.users).length,
-    totalOrders: Object.keys(db.orders).length,
-    totalProducts: Object.keys(db.products).length,
+    totalUsers: Object.keys(database.users).length,
+    totalReservations: Object.keys(database.reservations).length,
+    totalFlights: Object.keys(database.flights).length,
   };
 }

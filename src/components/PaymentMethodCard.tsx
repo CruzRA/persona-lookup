@@ -20,17 +20,6 @@ export function PaymentMethodCard({ method }: PaymentMethodCardProps) {
           </div>
         </>
       )}
-      {method.source === "paypal" && (
-        <>
-          <div className="w-10 h-7 rounded bg-[#003087] flex items-center justify-center">
-            <span className="text-[10px] font-bold text-white">PP</span>
-          </div>
-          <div className="flex-1">
-            <div className="text-sm font-medium">PayPal</div>
-            <div className="text-xs text-[var(--text-secondary)] font-mono">{method.id}</div>
-          </div>
-        </>
-      )}
       {method.source === "gift_card" && (
         <>
           <div className="w-10 h-7 rounded bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
@@ -39,7 +28,20 @@ export function PaymentMethodCard({ method }: PaymentMethodCardProps) {
           <div className="flex-1">
             <div className="text-sm font-medium">Gift Card</div>
             <div className="text-xs text-[var(--text-secondary)]">
-              Balance: <span className="text-green-400">${method.balance.toFixed(2)}</span>
+              Balance: <span className="text-green-400">${method.amount.toFixed(2)}</span>
+            </div>
+          </div>
+        </>
+      )}
+      {method.source === "certificate" && (
+        <>
+          <div className="w-10 h-7 rounded bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+            <span className="text-[10px] font-bold text-white">CR</span>
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-medium">Travel Certificate</div>
+            <div className="text-xs text-[var(--text-secondary)]">
+              Value: <span className="text-green-400">${method.amount.toFixed(2)}</span>
             </div>
           </div>
         </>

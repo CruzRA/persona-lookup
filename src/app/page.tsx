@@ -7,34 +7,31 @@ export default function Home() {
 
   return (
     <div className="space-y-12">
-      {/* Hero */}
       <section className="text-center space-y-6 py-12">
         <h1 className="text-4xl font-bold tracking-tight">
           Find Your Persona
         </h1>
         <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
-          Search for a test user to view their profile, orders, and payment methods.
+          Search for a test user to view their profile, reservations, and payment methods.
         </p>
         <SearchBox initialUsers={users} />
       </section>
 
-      {/* Stats */}
       <section className="grid grid-cols-3 gap-6">
         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6 text-center">
           <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalUsers.toLocaleString()}</div>
           <div className="text-sm text-[var(--text-secondary)] mt-1">Users</div>
         </div>
         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6 text-center">
-          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalOrders.toLocaleString()}</div>
-          <div className="text-sm text-[var(--text-secondary)] mt-1">Orders</div>
+          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalReservations.toLocaleString()}</div>
+          <div className="text-sm text-[var(--text-secondary)] mt-1">Reservations</div>
         </div>
         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-6 text-center">
-          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalProducts.toLocaleString()}</div>
-          <div className="text-sm text-[var(--text-secondary)] mt-1">Products</div>
+          <div className="text-3xl font-bold text-[var(--accent)]">{stats.totalFlights.toLocaleString()}</div>
+          <div className="text-sm text-[var(--text-secondary)] mt-1">Flights</div>
         </div>
       </section>
 
-      {/* Quick access - random sample of users */}
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Quick Access</h2>
         <p className="text-sm text-[var(--text-secondary)]">Sample personas to get started</p>
