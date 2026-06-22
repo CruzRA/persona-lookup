@@ -1,18 +1,36 @@
+import type { FlightDateStatus } from "@/lib/types";
+
 interface StatusBadgeProps {
-  status: "pending" | "processed" | "delivered" | "cancelled";
+  status: FlightDateStatus | string;
+  size?: "sm" | "md";
 }
 
-const statusStyles = {
-  pending: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  processed: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  delivered: "bg-green-500/20 text-green-400 border-green-500/30",
+const statusStyles: Record<string, string> = {
+  available: "bg-green-500/20 text-green-400 border-green-500/30",
   cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
+  delayed: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  flying: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  landed: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  "on time": "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
 };
 
-export function StatusBadge({ status }: StatusBadgeProps) {
+const defaultStyle = "bg-slate-500/20 text-slate-400 border-slate-500/30";
+
+function formatStatus(status: string): string {
+  return status
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+export function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
+  const sizeClass = size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs";
+
   return (
-    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusStyles[status]}`}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+    <span
+      className={`rounded-full font-medium border ${sizeClass} ${statusStyles[status] ?? defaultStyle}`}
+    >
+      {formatStatus(status)}
     </span>
   );
 }

@@ -8,8 +8,8 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Persona Lookup | Tau2 Retail",
-  description: "Look up user personas for testing",
+  title: "Persona Lookup | Tau2 Airline",
+  description: "Look up user personas for airline testing",
 };
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
                 </div>
                 <span className="text-lg font-semibold tracking-tight">Persona Lookup</span>
               </a>
-              <span className="text-xs text-[var(--text-secondary)]">RETAIL TEST DATA</span>
+              <span className="text-xs text-[var(--text-secondary)]">AIRLINE TEST DATA</span>
             </div>
           </header>
           <main className="max-w-6xl mx-auto px-6 py-8">
